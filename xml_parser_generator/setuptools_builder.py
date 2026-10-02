@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os.path
+from pathlib import Path
 
 from setuptools.command.build_py import build_py
 
@@ -27,15 +28,25 @@ class CustomBuildPy(build_py):
     PY_M_DEPENDENCIES = [SCHEMA_FILE, PY_MODULE_TEMPLATE, MAKER_SOURCE]
 
     def make_parser(self):
-        dest = self.PARSER_DEST
-        if not self.editable_mode:
-            dest = os.path.join(self.build_lib, dest)
+        src_root = Path.cwd()
+        if self.editable_mode:
+            # In editable mode, setuptools expects generated files to live in
+            # the project directory, not in the temporary build directory.
+            src_root = Path(__file__).resolve().parent.parent
+            dest = src_root / self.PARSER_DEST
+            dest.parent.mkdir(parents=True, exist_ok=True)
+        else:
+            dest = Path(self.build_lib) / self.PARSER_DEST
             mkpath(os.path.dirname(dest), dry_run=self.dry_run)
 
-        if self.force or newer_group(self.PY_M_DEPENDENCIES, dest):
+        dependencies = [src_root / dep for dep in self.PY_M_DEPENDENCIES]
+        if self.force or newer_group([str(d) for d in dependencies], str(dest)):
             log.info(f'generating "{dest}" source from template')
             if not self.dry_run:
-                make_parser.generate_from_json(self.SCHEMA_FILE, [(self.PY_MODULE_TEMPLATE, dest)])
+                make_parser.generate_from_json(
+                    str(src_root / self.SCHEMA_FILE),
+                    [(str(src_root / self.PY_MODULE_TEMPLATE), str(dest))],
+                )
         else:
             log.debug(f'"{dest}" is up-to-date')
 
