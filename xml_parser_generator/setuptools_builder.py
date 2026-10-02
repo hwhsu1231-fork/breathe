@@ -12,7 +12,10 @@ except ImportError:
 from distutils import log
 from distutils.dir_util import mkpath
 
-import make_parser
+try:
+    from xml_parser_generator import make_parser
+except ImportError:  # executed as a script: python xml_parser_generator/setuptools_builder.py
+    import make_parser  # type: ignore[no-redef]
 
 
 class CustomBuildPy(build_py):
