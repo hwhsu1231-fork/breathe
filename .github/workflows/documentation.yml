@@ -64,7 +64,6 @@ jobs:
 
     - name: Build the documentation
       run: |
-        make parser
         make html
         rm documentation/build/html/.buildinfo
 
