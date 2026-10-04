@@ -34,7 +34,7 @@ jobs:
       # time, including for editable installs.
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --editable ".[build]"
+        python -m pip install --editable "."
 
     - name: Format parser
       run: |
@@ -61,7 +61,6 @@ jobs:
       # time, including for editable installs.
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --editable ".[build]"
         python -m pip install --editable ".[lint]"
 
     - name: Type check with mypy

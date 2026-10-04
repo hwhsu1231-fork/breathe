@@ -107,7 +107,6 @@ jobs:
       # time, including for editable installs.
       run: |
         pip install --upgrade pip
-        pip install --editable .[build]
         pip install --editable .[test]
 
     - name: Version info
