@@ -3,10 +3,10 @@ from __future__ import annotations
 import os.path
 from pathlib import Path
 
-from setuptools.command.build_py import build_py
+from setuptools.command.build_py import build_py  # type: ignore[import-untyped]
 
 try:
-    from setuptools.modified import newer_group
+    from setuptools.modified import newer_group  # type: ignore[import-untyped]
 except ImportError:
     from distutils.dep_util import newer_group
 
@@ -16,7 +16,7 @@ from distutils.dir_util import mkpath
 try:
     from xml_parser_generator import make_parser
 except ImportError:  # executed as a script: python xml_parser_generator/setuptools_builder.py
-    import make_parser  # type: ignore[no-redef]
+    import make_parser  # type: ignore[no-redef, import-not-found]
 
 
 class CustomBuildPy(build_py):
